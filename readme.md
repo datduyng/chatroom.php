@@ -13,4 +13,4 @@ See Markup Chat in action. [Demo here](google.com)
 
 
 # Technologies
-- `PHP` | `SQL` | `AJAX`
+- `PHP` | `SQL` | `AJAX` | `nodeJS` | `Jquery`

@@ -112,17 +112,15 @@ img {
   integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
   crossorigin="anonymous"></script>
 
-<!--     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script> -->
-<!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 
-<!-- Optional theme -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
 
-<!-- Latest compiled and minified JavaScript -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 
-<link rel="stylesheet" href="./style.css">
+	<link rel="stylesheet" href="./style.css">
 
 </head>
 <body>
@@ -134,10 +132,10 @@ img {
   		<h1>Welcome to MarkupChat! <small>Simple Markdown supported chat app</small></h1>
 	</div>
     <?php
-      if ( isset($_SESSION["error"]) ) {//flash message
-        echo('<p style="color:red">'.$_SESSION["error"]."</p>\n");
-        unset($_SESSION["error"]);
-      }
+	if ( isset($_SESSION["error"]) ) {//flash message
+		echo('<p style="color:red">'.$_SESSION["error"]."</p>\n");
+		unset($_SESSION["error"]);
+	}
     ?>
     <br><br> <br><br>
     <div class="form-group col-lg-5 center-block">	
@@ -151,22 +149,14 @@ img {
 				</div>
 
 				<div class="form-group">
-					<div class='row'>
 					<div class="col-sm-offset-2 col-sm-10">
 						<input type="submit" name="loginPost" value="Login" class="btn btn-default"/>  		<input type="submit" name="cancelPost" value="Cancel" class="btn btn-default"/>
 					</div>
-						<div class="col-sm-offset-2 col-sm-10">
-							<p><a href="<?php echo($_SERVER['PHP_SELF']);?>">Refresh</a></p>
-						</div>	
-
+					<div class="col-sm-offset-2 col-sm-10">
+						<p><a href="<?php echo($_SERVER['PHP_SELF']);?>">Refresh</a></p>
+					</div>	
 				</div>
-
-				</div>
-				
-				</p>
-
-				
-				</form>
+			</form>
 		</div>
 	</div>
   </div>
