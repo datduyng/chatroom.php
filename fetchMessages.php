@@ -1,5 +1,6 @@
 
 <?php
+
 session_start();
 
 require_once "pdo.php";
@@ -18,11 +19,10 @@ if(isset($_GET['from']) && isset($_GET['to']) ){
 
 	$q = "SELECT u.user_id, u.name as username, m.content, m.t_stamp FROM messages as m
 			INNER JOIN users as u ON u.user_id=m.user_id
-			WHERE t_stamp>=:from_t AND t_stamp<:to_t
+			WHERE t_stamp>='".$_GET['from']."' AND t_stamp<'".$_GET['to']."'
 			ORDER BY t_stamp"; 
 	$stmt = $pdo->prepare($q);
-	$stmt_param = [':from_t'=>($_GET['from']),':to_t'=>($_GET['to']) ];
-	$stmt->execute($stmt_param);
+	$stmt->execute();
 	$results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 	ob_clean();
 	header('Content-Type: application/json'); 
@@ -31,7 +31,7 @@ if(isset($_GET['from']) && isset($_GET['to']) ){
     	'user_id' => $_SESSION['user_id'],
     	'username' => $_SESSION['name'], 
         'data' => [],
-        'log' => ""
+        'log' => $stmt_param
     );
 
     $messages = array();
@@ -44,7 +44,7 @@ if(isset($_GET['from']) && isset($_GET['to']) ){
 		]);
 	}
 	$params['data'] = $messages;
-	$params['log'] = "none";
+	$params['log'] = "OK FINE";
      
 	echo json_encode($params, JSON_PRETTY_PRINT);
 }

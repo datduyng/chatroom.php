@@ -1,5 +1,10 @@
-caveman_rock2<?php
+<?php
+ob_clean();
+
 session_start();
+
+require_once "pdo.php";
+
 
 
 if(!$_SESSION["name"] || !$_SESSION['user_id']){
@@ -12,21 +17,19 @@ if(!$_SESSION["name"] || !$_SESSION['user_id']){
 
 
 
-require_once "pdo.php";
 
-if(isset($_GET['message'])){
-	$q = "INSERT INTO messages (user_id, content) VALUES (:user_id, :content)"; 
+if(isset($_GET['message']) && isset($_GET['timestamp']) ){
+	$q = "INSERT INTO messages (user_id, content, t_stamp) VALUES (:user_id, :content, :timestamp)"; 
 	$stmt = $pdo->prepare($q);
-	$stmt->execute([':user_id'=>$_SESSION['user_id'], ':content'=>$_GET['message'] ]);
-
+	$stmt->execute([':user_id'=>$_SESSION['user_id'], ':content'=>$_GET['message'], ':timestamp'=>$_GET['timestamp'] ]);
+	
     $params = array(
         'type' => 'success',
     	'user_id' => $_SESSION['user_id'],
-    	'name' => $_GET['name'], 
+    	'name' => $_SESSION['name'], 
+		'timestamp' => $_GET['timestamp'],
         'data' => ""
     );
-
-	ob_clean();
-	header('Content-Type: application/json');      
+     
 	echo json_encode($params, JSON_PRETTY_PRINT);
 }

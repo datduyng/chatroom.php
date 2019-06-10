@@ -1,4 +1,5 @@
 
+
 	
 <?php
 session_start();
@@ -78,7 +79,6 @@ img {
   integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
   crossorigin="anonymous"></script>
 
-<!--     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script> -->
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 
@@ -87,6 +87,8 @@ img {
 
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.js"></script>
 <script type="text/javascript">
 	/**
 	 * Thanks to: http://stackoverflow.com/q/7616461/940217
@@ -113,6 +115,13 @@ img {
 	
 	<div class="container"> 
 		<h1> Welcome to Markup Chat! <?php echo $_SESSION['name']?></h1>
+
+		<div class="form-group">
+			<form method='post'>
+				<input type="submit" class="btn btn-default" value="Log out" name='logout'>
+			</form>
+		</div>
+
 		<div class="row" style="display: flex; align-items: center;">
 	        <div class="col-lg-8 center-block">
 	        	<div class="center-block" id="messages_canvas" style='overflow-x: hidden;overflow-y:auto;height:60vh;'></div>
@@ -128,11 +137,6 @@ img {
 
 			</form>
 
-		</div>
-		<div class="form-group">
-			<form method='post'>
-				<input type="submit" class="btn btn-default" value="Log out" name='logout'>
-			</form>
 		</div>
 	</div>
 
@@ -158,12 +162,12 @@ var avatars = [
 	];
 		var from = 0;
 		var to = 0;
-		var FREQUENCY = 2000; 
+		var FREQUENCY = 1000; 
 		var today = new Date();
 		var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
 		var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
 		var dateTime = date+' '+time;
-		var prev_tstamp = dateTime;
+		
 
 		var yesterday = new Date();
 		yesterday.setDate(yesterday.getDate()-1);
@@ -171,34 +175,54 @@ var avatars = [
 		var yesterday_time = yesterday.getHours() + ":" + yesterday.getMinutes() + ":" + yesterday.getSeconds();
 		var yesterday_dateTime = yesterday_date+' '+yesterday_time;
 		var username = <?php echo "'".$_SESSION['name']."'";?>;
+		var prev_tstamp = yesterday_time;
 
 
 		function handleFormSubmit(){
+
 			var form = $('#usrform'); 
-			var url = 'addMessage.php';
+			var _url = "addMessage.php";
+
+			var today = new Date();
+			var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+			var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+			var dateTime = date+' '+time;
 			$.ajax({
 				type: "POST",
-				url: url+"?"+$.param({
-							  'message': $("#comment_id").val()}),
-				dataType: "JSON",
+				url: _url+"?"+$.param({'message':$("#comment_id").val(), 'timestamp':dateTime}),
+				dataType: "json",
 				success: function(r){
 					return;
-				}
-
+				},
+				error: function(xhr, status, error) {
+  				alert(error);
+				}	
 			});
-			$('#comment_id').val("").focus().setSelectionRange(0,0);;
+
+			
+			if($('#comment_id').val("").focus().selectionRange){
+				$('#comment_id').val("").focus().setSelectionRange(0,0);;
+			}else{
+				$('#comment_id').val($('#comment_id').val());
+			}
 		}
 		function fetchMessages(from, to){
+			var _url = "fetchMessages.php";
+			console.log('from', from, 'to', to);		
 			$.ajax({
 				type: "POST",
-				url: "fetchMessages.php?"+$.param({'room_id':0, 
-							'from':from, 'to':to}),
+				url: _url+"?"+$.param({'room_id':0,'from':from, 'to':to}),
 				dataType: 'json', 
 				success: function(r){
 					var content = "";
 					if(r.data.length > 0){
 						for(var i=0; i<r.data.length; i++){
 							if(r.data[i].content != null) {
+								if(i == r.data.length-1){
+									var unixt = moment(r.data[i].timestamp, 'YYYY-MM-DD h:mm:ss').unix() + 1;
+									prev_tstamp = moment.unix(unixt).format('YYYY-MM-DD h:mm:ss');
+									console.log('updated yet', prev_tstamp);
+								}
 								if(r.data[i].username == username){
 									content += (
 									"<div class='row'><div class='container-custome col-lg-8 center-block'>" + 
@@ -216,7 +240,7 @@ var avatars = [
 								}
 
 							}
-						}					
+						}	
 						$('#messages_canvas').append(content);
 						$('#messages_canvas').scrollTop($('#messages_canvas')[0].scrollHeight);
 					}
@@ -224,24 +248,13 @@ var avatars = [
 				}
 			});
 		}
-		fetchMessages(yesterday_dateTime, dateTime);
+		fetchMessages(prev_tstamp, dateTime);
 
 
 
 		$('#usrform').submit(function(e) {
 			e.preventDefault();
-			var form = $('#usrform'); 
-			var url = 'addMessage.php';
-			$.ajax({
-				type: "POST",
-				url: url+"?"+$.param({
-							  'message': $("#comment_id").val()}),
-				dataType: "JSON",
-				success: function(r){
-					return;
-				}
-
-			});
+			handleFormSubmit();
 		});
 		setInterval(function(i){
 			var today = new Date();
@@ -252,7 +265,7 @@ var avatars = [
 			var current_tstamp = dateTime;
 			fetchMessages(prev_tstamp, current_tstamp);
 
-			prev_tstamp = current_tstamp;
+			// prev_tstamp = current_tstamp;
 		}, FREQUENCY)
 
 	</script>
