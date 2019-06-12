@@ -1,5 +1,5 @@
 # Markup Chat
-A simple Model View Controller(MVC) Markdown supported chat apps
+A simple Model View Controller(MVC) Markdown supported chat app
 
 See Markup Chat in action. [Demo here](https://cse.unl.edu/~datduyn/markupchat/)
 
